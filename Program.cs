@@ -1,4 +1,8 @@
 using FrannielArias_AP1_P2.Components;
+using FrannielArias_AP1_P2.DAL;
+using FrannielArias_AP1_P2.Models;
+using FrannielArias_AP1_P2.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+var ConStr = builder.Configuration.GetConnectionString("ConStr");
+builder.Services.AddDbContextFactory<Contexto>(Options => Options.UseSqlServer(ConStr));
+builder.Services.AddScoped<FrannielArias_AP1_P2.Services.RegistroService>();
+
+builder.Services.AddBlazorBootstrap();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
