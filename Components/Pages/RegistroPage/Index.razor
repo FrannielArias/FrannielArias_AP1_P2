@@ -1,0 +1,88 @@
+﻿@page "/Registro/Index"
+@inject RegistroService registroService
+<PageTitle>Index cotizaciones</PageTitle>
+<div class="container">
+    <div class="shadow-lg">
+        @*hearder*@
+        <div class="card-header">
+            <div class="text-center">
+                <h2><strong>Resgistro</strong></h2>
+            </div>
+        </div>
+        @*Body*@
+        <div class="card-body">
+
+            @*Crear*@
+            <div class="col text-end">
+                <a href="Registro/Create"><button type="button" class="btn btn-success bi bi-person-plus"> Crear</button></a>
+            </div>
+            @*Tabla*@
+            <table class="table table-bordered text-center mt-4">
+                <thead>
+                    <tr>
+                        <th>RegistroId</th>
+                        <th>Observar</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var registro in ListarRegistro)
+                    {
+                        <tr>
+                            <td>@registro.RegitroId</td>                       
+                            @*Observar*@
+                            <td>
+                                <a href="Registro/Details/@registro.RegitroId" class="btn btn-outline-primary">
+                                    <span class="bi bi-eye"></span>
+                                </a>
+                            </td>
+                            @*Editar*@
+                            <td>
+                                <a href="Registro/Edit/@registro.RegitroId" class="btn btn-outline-warning">
+                                    <span class="bi bi-pen"></span>
+                                </a>
+                            </td>
+                            @*Eliminar*@
+                            <td>
+                                <a href="Registro/Delete/@registro.RegitroId" class="btn btn-outline-danger">
+                                    <span class="bi bi-trash"></span>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <p><strong>Cantidad de registros:</strong>@ListarRegistro.Count</p>
+            <button type="button" class="btn btn-primary" @onclick="Prueba">Hola</button>
+        </div>
+    </div>
+</div>
+@code {
+    public Registro registro { get; set; } = new Registro();
+    public List<Registro> ListarRegistro { get; set; } = [];
+
+    public List<ToastMessage> Mensaje { get; set; } = [];
+    public void Notificacion(ToastType toastType, string title, string message, IconName icono) => Mensaje.Add(ShowToast(toastType, title, message, icono));
+
+
+    private ToastMessage ShowToast(ToastType toastType, string title, string message, IconName icono)
+    {
+        var mensaje = new ToastMessage()
+            {
+                Type = toastType,
+                IconName = icono,
+                Title = title,
+                HelpText = $"{DateTime.Now.ToString("dd/MM/yyyy")}",
+                Message = $"{message}. A las {DateTime.Now.ToString("hh:mm tt")}",
+            };
+        toastService.Notify(mensaje);
+        return mensaje;
+    }
+    public void Prueba()
+    {
+        Notificacion(ToastType.Success, "Listo", "final", IconName.ArrowDownLeftSquare);
+    }
+}
