@@ -1,9 +1,11 @@
 ﻿@page "/Combos/Create"
 @inject ComboService comboService
 @inject ArticulosService articulosService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
 
 <PageTitle>Create</PageTitle>
-<EditForm OnInvalidSubmit="Guardar"> 
+<EditForm Model="combos" OnValidSubmit="Guardar"> 
     <DataAnnotationsValidator/>
     <div class="container">
         <div class="shadow-lg">
@@ -19,19 +21,24 @@
                     <InputNumber class="form-control"@bind-Value=combos.ComboId></InputNumber>
                 </div>
                 @*Fecha*@
-                <div class="col-3">
+                <div class="col-3 mt-4">
                     <label class="col-form-label">Fecha</label>
                     <InputDate class="form-control"@bind-Value=combos.Fecha/>
                 </div>
                 @*Descripcion*@
-                <div class="col-3">
+                <div class="col-3 mt-4">
                     <label class="col-form-label">Descripcion</label>
                     <InputText class="form-control"@bind-Value=combos.Descricion/>
                 </div>
                 @*Precio*@
-                <div class="col-3">
-
+                <div class="col-3 mt-4">
+                    <label class="form-control">Precio</label>
+                    <InputNumber class="form-control"@bind-Value=combos.Precio></InputNumber>
                 </div>
+            </div>
+            @*Footter*@
+            <div class="card-footer">
+                <button type="submit" class="btn btn-success" @onclick="Guardar">Guardar</button>
             </div>
         </div>
     </div>
@@ -60,6 +67,7 @@
         toastService.Notify(mensaje);
         return mensaje;
     }
+
     public async Task Guardar()
     {
         var Crear = await comboService.Guardar(combos);
