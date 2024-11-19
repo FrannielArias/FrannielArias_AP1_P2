@@ -1,5 +1,84 @@
-﻿<h3>Create</h3>
+﻿@page "/Combos/Create"
+@inject ComboService comboService
+@inject ArticulosService articulosService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Create</PageTitle>
+<EditForm Model="combos" OnValidSubmit="Guardar"> 
+    <DataAnnotationsValidator/>
+    <div class="container">
+        <div class="shadow-lg">
+            @*Header*@
+            <div class="card-header text-center">
+                <h3>Create de Combo</h3>
+            </div>
+            @*Body*@
+            <div class="card-body">
+                @*ComboId*@
+                <div class="col-3">
+                    <label class="col-form-label">ComboId</label>
+                    <InputNumber class="form-control"@bind-Value=combos.ComboId></InputNumber>
+                </div>
+                @*Fecha*@
+                <div class="col-3 mt-4">
+                    <label class="col-form-label">Fecha</label>
+                    <InputDate class="form-control"@bind-Value=combos.Fecha/>
+                </div>
+                @*Descripcion*@
+                <div class="col-3 mt-4">
+                    <label class="col-form-label">Descripcion</label>
+                    <InputText class="form-control"@bind-Value=combos.Descricion/>
+                </div>
+                @*Precio*@
+                <div class="col-3 mt-4">
+                    <label class="form-control">Precio</label>
+                    <InputNumber class="form-control"@bind-Value=combos.Precio></InputNumber>
+                </div>
+            </div>
+            @*Footter*@
+            <div class="card-footer">
+                <button type="submit" class="btn btn-success" @onclick="Guardar">Guardar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
 
 @code {
+    public Combos combos { get; set; } = new Combos();
+    public List<Articulos> ListaArticulos { get; set; } = new List<Articulos>();
+    public List<ToastMessage> Mensaje { get; set; } = [];
+    public void Notificacion(ToastType toastType, string title, string message) => Mensaje.Add(ShowToast(toastType, title, message));
 
+    protected override async Task OnInitializedAsync()
+    {
+        ListaArticulos = await articulosService.Listar(a => true);
+    }
+
+    private ToastMessage ShowToast(ToastType toastType, string title, string message)
+    {
+        var mensaje = new ToastMessage()
+            {
+                Type = toastType,
+                Title = title,
+                HelpText = $"{DateTime.Now.ToString("dd/MM/yyyy")}",
+                Message = $"{message}. A las {DateTime.Now.ToString("hh:mm tt")}",
+            };
+        toastService.Notify(mensaje);
+        return mensaje;
+    }
+
+    public async Task Guardar()
+    {
+        var Crear = await comboService.Guardar(combos);
+
+        if (Crear)
+        {
+            Notificacion(ToastType.Success, "Combo", "Se creo correctamente");
+        }
+        else
+        {
+            Notificacion(ToastType.Danger, "Combo", "No se pudo crear");
+        }
+    }
 }

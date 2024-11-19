@@ -12,9 +12,11 @@ builder.Services.AddRazorComponents()
 
 var ConStr = builder.Configuration.GetConnectionString("ConStr");
 builder.Services.AddDbContextFactory<Contexto>(Options => Options.UseSqlServer(ConStr));
-builder.Services.AddScoped<FrannielArias_AP1_P2.Services.RegistroService>();
+builder.Services.AddScoped<ArticulosService>();
+builder.Services.AddScoped<ComboService>();
 
 builder.Services.AddBlazorBootstrap();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
